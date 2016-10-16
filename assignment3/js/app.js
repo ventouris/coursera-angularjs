@@ -4,19 +4,20 @@
 angular.module('NarrowItDownApp', [])
 .controller('NarrowItDownController', NarrowItDownController)
 .service('MenuSearchService', MenuSearchService)
-.directive('foundItems', foundItemsDirective)
+.directive('foundItems', FoundItemsDirective)
 .constant('ApiBasePath', "http://davids-restaurant.herokuapp.com");
 
 
 
-function foundItemsDirective() {
+function FoundItemsDirective() {
   var ddo = {
     templateUrl: 'foundItems.html',
     scope: {
-      foundItems: '<',
+      items: '<',
+      warning: '<',
       onRemove: '&'
     },
-    controller: NarrowItDownController,
+    controller: FoundItemsDirectiveController,
     controllerAs: 'narrow',
     bindToController: true
   };
@@ -24,21 +25,50 @@ function foundItemsDirective() {
   return ddo;
 }
 
-function foundItemsDirectiveController() {
+function FoundItemsDirectiveController() {
   var narrow = this;
-  
+
 }
-
-
 
 NarrowItDownController.$inject = ['MenuSearchService'];
 function NarrowItDownController(MenuSearchService) {
 
-  var narrowIt = this;
+  var narrow = this;
 
-  narrowIt.searchMenu = function () {
-    var found = MenuSearchService.getMatchedMenuItems(narrowIt.searchTerm);
-  }
+
+
+  narrow.searchMenu = function () {
+
+    narrow.warning = false;
+    if ( !narrow.searchTerm ) {
+      narrow.warning = true;
+    }
+
+    var promise = MenuSearchService.getMatchedMenuItems();
+
+    promise.then(function (response) {
+      narrow.found = [];
+
+      for (var i = 0; i < response.data.menu_items.length; i++) {
+        var descr = response.data.menu_items[i].description;
+        if (descr.toLowerCase().indexOf(narrow.searchTerm) !== -1) {
+          narrow.found.push(response.data.menu_items[i]);
+        }
+      }
+      if (!narrow.found.length>0) {
+        narrow.warning = true;
+      }
+    }).
+    catch(function (error) {
+      console.log(error);
+    })
+
+
+  };
+
+  narrow.removeItem = function (itemIndex) {
+    narrow.found.splice(itemIndex, 1);
+  };
 
 }
 
@@ -47,22 +77,13 @@ function MenuSearchService($http, ApiBasePath) {
 
   var service = this;
 
-  service.getMatchedMenuItems = function (searchTeam) {
-    return $http({
+  service.getMatchedMenuItems = function () {
+    var response = $http({
       method: "GET",
       url: (ApiBasePath + "/menu_items.json")
-    }).then(function (result) {
-      var foundItems = [];
+    });
 
-      for (var i = 0; i < result.data.menu_items.length; i++) {
-        var descr = result.data.menu_items[i].description;
-        if (descr.toLowerCase().indexOf(searchTeam) !== -1) {
-          foundItems.push(result.data.menu_items[i]);
-        }
-      }
-      return foundItems;
-    })
-
+    return response;
   }
 }
 
