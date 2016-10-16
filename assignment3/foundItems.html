@@ -1,6 +1,6 @@
 <h3 class='warning' ng-if='narrow.warning'>Nothing found</h3>
-<h3 class='title' ng-if='narrow.items.length > 0'>Weeee.. We found it</h3>
-    <table ng-if='narrow.items.length > 0'>
+<h3 class='title' ng-if='narrow.showTable'>Weeee.. We found it</h3>
+    <table ng-if='narrow.showTable'>
       <thead><tr><th>name</th><th>short name</th><th>description</th><th>action</th></tr></thead>
       <tbody>
         <tr ng-repeat="item in narrow.items">
