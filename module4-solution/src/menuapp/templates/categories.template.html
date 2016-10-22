@@ -1,0 +1,16 @@
+<div style="width: 100%">
+<a ui-sref="home">Back at home</a>
+</div>
+
+<div style="width: 50%;float:left">
+    <ul>
+        <li ng-repeat="category in ctrl.categories">
+            <a ui-sref="categories.items({categoryShortName: category.short_name})">({{category.short_name}})
+                {{category.name}}</a>
+        </li>
+    </ul>
+</div>
+
+<div style="width: 50%;float:left">
+    <ui-view></ui-view>
+</div>
