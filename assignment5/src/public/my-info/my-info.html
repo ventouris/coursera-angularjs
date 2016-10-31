@@ -1,0 +1,25 @@
+<div class="container">
+
+  <span ng-hide="myinfoCtrl.user">
+    Not Signed Up Yet. <a ui-sref="public.signup">Sign up Now!</a>
+  </span>
+
+  <div class="col-md-4" ng-show="myinfoCtrl.user">
+    <h2>Your favourite dish</h2>
+    <img class="img-responsive"
+         width="250"
+         height="150"
+         ng-src="{{myinfoCtrl.basePath}}/images/{{myinfoCtrl.user.favouritedish}}.jpg" alt="{{myinfoCtrl.menuItem.name}}">
+    <p>{{myinfoCtrl.menuItem.name}}</p>
+    <p>{{myinfoCtrl.menuItem.description}}</p>
+  </div>
+
+  <div class="col-md-8" ng-show="myinfoCtrl.user">
+    <h2>Your personal details</h2>
+    <p>First Name: {{myinfoCtrl.user.firstname}}</p>
+    <p>Last Name: {{myinfoCtrl.user.lastname}}</p>
+    <p>Email: {{myinfoCtrl.user.email}}</p>
+    <p>Phone: {{myinfoCtrl.user.phone ? myinfoCtrl.user.phone : "You haven't submit a phone number"}}</p>
+  </div>
+
+</div>
